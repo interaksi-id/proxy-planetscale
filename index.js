@@ -27,3 +27,6 @@ app.post('/postData', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
+
+// Export the Express API
+module.exports = app;
