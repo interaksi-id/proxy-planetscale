@@ -1,0 +1,38 @@
+create table performer (
+    id int not null auto_increment,
+    phone varchar(100) not null,
+    email varchar(100) null,
+    link varchar(1000) not null,
+    service_category varchar(100) not null,
+    is_active bit not null,
+    constraint performer_pk primary key (id)    
+)
+
+
+create table request (
+    id varchar(24) not null auto_increment,
+    client_phone varchar(100) not null,
+    client_email varchar(100) null,
+    created_date date not null,
+    service_category varchar(1000) not null,
+    refferal_url varchar(5000) null,
+    status int not null,
+    link varchar(1000) null,
+    amount varchar(1000) null,
+    assigned_manager varchar(1000) null,
+    type int not null,
+    constraint order_pk primary key (id)
+)
+
+create table request_status_history (
+    request_id varchar(24) not null,
+    datetime date not null,
+    status int not null
+)
+
+create table performer_interaction_with_request (
+    request_id varchar(24) not null,
+    performer_id int not null,
+    datetime date not null,
+    action int not null
+)
