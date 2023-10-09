@@ -37,27 +37,42 @@ app.post('/getPerformerObject', (req, res) => {
       let cities = "";
       let cityArray = [];
       
-      if(requestData.cities && requestData.cities.length > 0)
+      if(requestData.cities)
       {
-        for(let i = 0; i < requestData.cities.length; i++)
+        let requestCities = requestData.cities.replace(/\s+/g, '').split(',');
+        if(requestCities && requestCities.length > 0)
         {
-          console.log(requestData.cities);
-          cityArray.push(PerformerHelper.getCityNameById(requestData.cities[i]));
-        }
-        cities = cityArray.join('|');
+          for(let i = 0; i < requestCities.length; i++)
+          {
+            let city = PerformerHelper.getCityNameById(requestCities[i]);
+            if(city)
+            {
+              cityArray.push(city);
+            }
+          }
+          cities = cityArray.join('|');
+          }
       }
 
-      if(requestData.categories && requestData.categories.length > 0)
+      if(requestData.categories)
       {
-        for(let i = 0; i < requestData.categories.length; i++)
+
+        let requestCategories = requestData.categories.replace(/\s+/g, '').split(',');
+        if(requestCategories && requestCategories.length > 0)
         {
-          categoryArray.push(PerformerHelper.getCategoryNameById(requestData.categories[i]));
-        }
-        categories = categoryArray.join('|');
+          for(let i = 0; i < requestCategories.length; i++)
+          {
+            let category = PerformerHelper.getCategoryNameById(requestCategories[i])
+            if(category) {
+              categoryArray.push(category);
+            }
+          }
+          categories = categoryArray.join('|');
+        }  
+
+        
       }
       
-      console.log(requestData);
-
       let object = {
         category: categories,
         cities: cities,
