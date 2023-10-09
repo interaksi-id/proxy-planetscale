@@ -1,7 +1,6 @@
 create table performer (
-    id int not null auto_increment,
-    phone varchar(100) not null,
-    email varchar(100) null,
+    id varchar(24) not null,
+    name varchar(1000) not null,
     link varchar(1000) not null,
     service_category varchar(100) not null,
     is_active bit not null,
@@ -10,7 +9,7 @@ create table performer (
 
 
 create table request (
-    id varchar(24) not null auto_increment,
+    id varchar(24) not null,
     client_phone varchar(100) not null,
     client_email varchar(100) null,
     created_date date not null,
@@ -32,7 +31,7 @@ create table request_status_history (
 
 create table performer_interaction_with_request (
     request_id varchar(24) not null,
-    performer_id int not null,
+    performer_id varchar(24) not null,
     datetime date not null,
     action int not null
 )
