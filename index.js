@@ -112,6 +112,11 @@ app.post('/updateOrderStatusInfo', (req, res) => {
         console.log(111);
         //1.1 Получаем объект заказа из БД по ID
         connection.query(`select * from request where id = \"${requestData.id}\"`, function(err, rows, fields) {
+          
+          console.log(requestData.id);
+          console.log(666);
+
+          
           if(err) 
           {
             console.log(err);
