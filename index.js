@@ -113,11 +113,8 @@ app.post('/updateOrderStatusInfo', (req, res) => {
         connection.query(`select * from request where id = \"${requestData.id}\"`, function(err, rows, fields) {
           
           console.log(6666);
-          if(err) 
-          {
-            console.log(err);
-            throw err;
-          }
+          if(err) throw err;
+         
           if(rows && rows.length > 0)
           {
             console.log(2222);
@@ -131,7 +128,8 @@ app.post('/updateOrderStatusInfo', (req, res) => {
               //Обновить только request
               connection.query(`update request set amount = ${orderAmount} where id = \"${requestData.id}\"`, function(err1, rows1, fields1) {
                 if(err1) throw err1;
-              
+                res.send(object);
+
               });
 
             }
@@ -145,6 +143,7 @@ app.post('/updateOrderStatusInfo', (req, res) => {
               
                 connection.query(`insert into request_status_history (request_id, datetime, status) values(\"${requestData.id}\", UTC_TIMESTAMP(), ${newOrderStatus})`, function(err2, row2, fields2) {
                   if(err2) throw err2;
+                  
                 })
               });
 
@@ -163,6 +162,7 @@ app.post('/updateOrderStatusInfo', (req, res) => {
                       {
                         connection.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 2)`, function(err3, rows3, fields3) {
                           if(err3) throw err3;
+                          res.send(object);
                         });
                       }
                     }
@@ -180,21 +180,23 @@ app.post('/updateOrderStatusInfo', (req, res) => {
                       {
                         connection.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 3)`, function(err3, rows3, fields3) {
                           if(err3) throw err3;
+                          res.send(object);
                         });
                       }
                     }
                   }
                 }
               }
+              else {
+                res.send(object);
+              }
             }
           }
 
-          res.send(object);
+          //res.send(object);
 
         });
       }
-
-      //res.send(object);
     }
   }
 })
