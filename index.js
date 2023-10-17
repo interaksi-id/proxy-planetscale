@@ -102,7 +102,6 @@ app.post('/updateOrderStatusInfo', (req, res) => {
       }
       let newOrderStatus = OrderHelper.getOrderStatusById(newOrderStatusId);
     
-
       let object = {
         status : OrderHelper.getOrderStatusNameById(newOrderStatusId) 
       };
@@ -189,10 +188,13 @@ app.post('/updateOrderStatusInfo', (req, res) => {
               }
             }
           }
+
+          res.send(object);
+
         });
       }
 
-      res.send(object);
+      //res.send(object);
     }
   }
 })
