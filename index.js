@@ -109,20 +109,20 @@ app.post('/updateOrderStatusInfo', (req, res) => {
 
       if(newOrderStatus && newOrderStatus > 0)
       {
-        console.log(1);
+        console.log(11);
         //1.1 Получаем объект заказа из БД по ID
         connection.query(`select * from request where id = \"${requestData.id}\"`, function(err, rows, fields) {
           if(err) throw err;
           console.log(rows)
           if(rows && rows.length > 0)
           {
-            console.log(2);
+            console.log(22);
 
             let currentOrder = rows[0];
             let oldStatus = currentOrder.status;
             if(oldStatus == newOrderStatus)
             {
-              console.log(3);
+              console.log(33);
 
               //Обновить только request
               connection.query(`update request set amount = ${orderAmount} where id = \"${requestData.id}\"`, function(err1, rows1, fields1) {
