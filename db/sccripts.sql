@@ -1,5 +1,6 @@
 create table performer (
     id varchar(24) not null,
+    created_date date not null,
     name varchar(1000) not null,
     link varchar(1000) not null,
     service_category varchar(100) not null,
@@ -25,13 +26,13 @@ create table request (
 
 create table request_status_history (
     request_id varchar(24) not null,
-    datetime date not null,
+    datetime datetime not null,
     status int not null
 )
 
 create table performer_interaction_with_request (
     request_id varchar(24) not null,
     performer_id varchar(24) not null,
-    datetime date not null,
+    datetime datetime not null,
     action int not null
 )
