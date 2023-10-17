@@ -112,7 +112,11 @@ app.post('/updateOrderStatusInfo', (req, res) => {
         console.log(11);
         //1.1 Получаем объект заказа из БД по ID
         connection.query(`select * from request where id = \"${requestData.id}\"`, function(err, rows, fields) {
-          if(err) throw err;
+          if(err) 
+          {
+            console.log(err);
+            throw err;
+          }
           console.log(rows)
           if(rows && rows.length > 0)
           {
