@@ -109,90 +109,90 @@ app.post('/updateOrderStatusInfo', (req, res) => {
       if(newOrderStatus && newOrderStatus > 0)
       {
         console.log(1111);
-        try
-        {
-          connection.query(`select * from request where id = \"${requestData.id}\"`, function(err, rows, fields) {
+        //1.1 Получаем объект заказа из БД по ID
+        connection.query(`select * from request where id = \"${requestData.id}\"`, function(err, rows, fields) {
           
-            console.log(6666);
-            if(err) throw err;
-           
-            if(rows && rows.length > 0)
+          console.log(6666);
+          if(err) throw err;
+         
+          if(rows && rows.length > 0)
+          {
+            console.log(2222);
+
+            let currentOrder = rows[0];
+            let oldStatus = currentOrder.status;
+            if(oldStatus == newOrderStatus)
             {
-              console.log(2222);
-  
-              let currentOrder = rows[0];
-              let oldStatus = currentOrder.status;
-              if(oldStatus == newOrderStatus)
-              {
-                console.log(3333);
-  
-                //Обновить только request
-                connection.query(`update request set amount = ${orderAmount} where id = \"${requestData.id}\"`, function(err1, rows1, fields1) {
-                  if(err1) throw err1;
-                });
-              }
-              else {
-  
-                console.log(4444);
-                //Обновить request and request_status_history
-                connection.query(`update request set amount = ${orderAmount}, status = ${newOrderStatus} where id = \"${requestData.id}\"`, function(err1, rows1, fields1) {
-                  if(err1) throw err1;
-                
-                  connection.query(`insert into request_status_history (request_id, datetime, status) values(\"${requestData.id}\", UTC_TIMESTAMP(), ${newOrderStatus})`, function(err2, row2, fields2) {
-                    if(err2) throw err2;
-                    
-                  })
-                });
-  
-                if(!OrderHelper.isNeedUpdateOnlyStatus(newOrderStatusId)) {
-                  
-                  //Обновить performer interaction with request 
-                  if(newOrderStatusId == OrderHelper.DISCUSSION_OF_TERMS_STATUS)
-                  {
-                    let performersString = requestData.performersForDiscussing;
-                    if(performersString)
-                    {
-                      let performersArray = performersString.replace(/\s+/g, '').split(',');
-                      if(performersArray && performersArray.length > 0)
-                      {
-                        for(let i = 0; i < performersArray.length; i++)
-                        {
-                          connection.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 2)`, function(err3, rows3, fields3) {
-                            if(err3) throw err3;
-                          });
-                        }
-                      }
-                    }
-                  }
-                  else if(newOrderStatusId == OrderHelper.CLIENT_CHOICE_PERFORMER_STATUS) 
-                  {
-                    let performersString = requestData.whoFulfillOrder;
-                    if(performersString)
-                    {
-                      let performersArray = performersString.replace(/\s+/g, '').split(',');
-                      if(performersArray && performersArray.length > 0)
-                      {
-                        for(let i = 0; i < performersArray.length; i++)
-                        {
-                          connection.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 3)`, function(err3, rows3, fields3) {
-                            if(err3) throw err3;
-                          });
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+              console.log(3333);
+
+              //Обновить только request
+              connection.query(`update request set amount = ${orderAmount} where id = \"${requestData.id}\"`, function(err1, rows1, fields1) {
+                if(err1) throw err1;
+                res.send(object);
+
+              });
+
             }
-  
-            //res.send(object);
-  
-          });
-        }
-        finally {
-          connection.end();
+            else {
+
+              console.log(4444);
+
+              //Обновить request and request_status_history
+              connection.query(`update request set amount = ${orderAmount}, status = ${newOrderStatus} where id = \"${requestData.id}\"`, function(err1, rows1, fields1) {
+                if(err1) throw err1;
+              
+                connection.query(`insert into request_status_history (request_id, datetime, status) values(\"${requestData.id}\", UTC_TIMESTAMP(), ${newOrderStatus})`, function(err2, row2, fields2) {
+                  if(err2) throw err2;
+                  
+                  if(!OrderHelper.isNeedUpdateOnlyStatus(newOrderStatusId)) {
+                
+                    //Обновить performer interaction with request 
+                    if(newOrderStatusId == OrderHelper.DISCUSSION_OF_TERMS_STATUS)
+                    {
+                      let performersString = requestData.performersForDiscussing;
+                      if(performersString)
+                      {
+                        let performersArray = performersString.replace(/\s+/g, '').split(',');
+                        if(performersArray && performersArray.length > 0)
+                        {
+                          for(let i = 0; i < performersArray.length; i++)
+                          {
+                            connection.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 2)`, function(err3, rows3, fields3) {
+                              if(err3) throw err3;
+                              res.send(object);
+                            });
+                          }
+                        }
+                      }
+                    }
+                    else if(newOrderStatusId == OrderHelper.CLIENT_CHOICE_PERFORMER_STATUS) 
+                    {
+                      let performersString = requestData.whoFulfillOrder;
+                      if(performersString)
+                      {
+                        let performersArray = performersString.replace(/\s+/g, '').split(',');
+                        if(performersArray && performersArray.length > 0)
+                        {
+                          for(let i = 0; i < performersArray.length; i++)
+                          {
+                            connection.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 3)`, function(err3, rows3, fields3) {
+                              if(err3) throw err3;
+                              res.send(object);
+                            });
+                          }
+                        }
+                      }
+                    }
+                  }
+                  res.send(object);
+                })
+              });
+
+            }
+          }
           res.send(object);
-        }
+
+        });
       }
     }
   }
