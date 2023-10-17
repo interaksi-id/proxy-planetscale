@@ -95,8 +95,13 @@ app.post('/updateOrderStatusInfo', (req, res) => {
     if(requestData.id)
     {
       let newOrderStatusId = requestData.status;
-      let orderAmount = requestData.finalOrderAmount;
+      let orderAmount = 0;
+      if(requestData.finalOrderAmount)
+      {
+        orderAmount = requestData.finalOrderAmount;
+      }
       let newOrderStatus = OrderHelper.getOrderStatusById(newOrderStatusId);
+    
 
       let object = {
         status : OrderHelper.getOrderStatusNameById(newOrderStatusId) 
