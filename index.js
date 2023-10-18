@@ -159,7 +159,7 @@ app.post('/updateOrderStatusInfo', (req, res) => {
                           {
                             connection.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 2)`, function(err3, rows3, fields3) {
                               if(err3) throw err3;
-                              res.send(object);
+                              //res.send(object);
                             });
                           }
                         }
