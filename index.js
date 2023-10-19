@@ -10,13 +10,13 @@ app.use(bodyParser.json())
 const mysql = require('mysql2');
 const mysql2 = require('mysql2/promise');
 const { OrderHelper } = require('./orderHelper');
-const connection = mysql.createConnection(process.env.DATABASE_URL);
+//const connection = mysql.createConnection(process.env.DATABASE_URL);
 
-
-//connection.connect()
-//conn.connect();
 
 app.post('/postData', (req, res) => {
+
+  const connection = mysql.createConnection(process.env.DATABASE_URL);
+  connection.connect();
 
   if(req.body) {
     let requestData = req.body.request;
@@ -30,7 +30,12 @@ app.post('/postData', (req, res) => {
 })
 
 app.post('/getPerformerObject', (req, res) => {
+  
+  const connection = mysql.createConnection(process.env.DATABASE_URL);
+  connection.connect();
+  
   if(req.body) {
+
     let requestData = req.body.request;
 
     if(requestData) {
