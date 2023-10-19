@@ -100,8 +100,6 @@ app.post('/updateOrderStatusInfo',  async (req, res) => {
 
   const connection2 = await mysql2.createConnection(process.env.DATABASE_URL);
 
-  //let conn = (await connection2).connect();
-
   if(req.body) {
     let requestData = req.body.request;
     if(requestData.id)
@@ -120,34 +118,21 @@ app.post('/updateOrderStatusInfo',  async (req, res) => {
 
       if(newOrderStatus && newOrderStatus > 0)
       {
-        console.log(1111);
         //1.1 Получаем объект заказа из БД по ID
-
         let [rows, fields] = await connection2.query(`select * from request where id = \"${requestData.id}\"`);
         if(rows && rows.length > 0)
         {
-            console.log(2222);
-
             let currentOrder = rows[0];
             let oldStatus = currentOrder.status;
             if(oldStatus == newOrderStatus)
             {
-              console.log(3333);
-
               await connection2.query(`update request set amount = ${orderAmount} where id = \"${requestData.id}\"`);
-             
-              res.send(object);
-              return;
-
             }
-            
-            console.log(4444);
-
             //Обновить request and request_status_history
             let promises = [];
             promises.push(connection2.query(`update request set amount = ${orderAmount}, status = ${newOrderStatus} where id = \"${requestData.id}\"`));
             promises.push(connection2.query(`insert into request_status_history (request_id, datetime, status) values(\"${requestData.id}\", UTC_TIMESTAMP(), ${newOrderStatus})`));
-            await Promise.all(promises);
+            Promise.all(promises);
 
             if(!OrderHelper.isNeedUpdateOnlyStatus(newOrderStatusId)) {
               
@@ -168,8 +153,6 @@ app.post('/updateOrderStatusInfo',  async (req, res) => {
                     await Promise.all(performerPromises);
                   }
                 }
-                res.send(object);
-                return;
               }
               if(newOrderStatusId == OrderHelper.CLIENT_CHOICE_PERFORMER_STATUS) 
               {
@@ -185,15 +168,16 @@ app.post('/updateOrderStatusInfo',  async (req, res) => {
                     {
                       performerPromises.push(connection2.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 3)`));
                     }
-                    await Promise.all(performerPromises);
-                    res.send(object);
-                    return;
+                    Promise.all(performerPromises);
                   }
                 }
               }
             }
         }
       }
+
+      res.send(object);
+      return;
     }
   }
 })
