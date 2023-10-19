@@ -8,10 +8,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 
 const mysql = require('mysql2');
+const mysql2 = require('mysql2/promise');
 const { OrderHelper } = require('./orderHelper');
 const connection = mysql.createConnection(process.env.DATABASE_URL);
 
-connection.connect()
+
+//connection.connect()
+//conn.connect();
 
 app.post('/postData', (req, res) => {
 
@@ -88,7 +91,11 @@ app.post('/getPerformerObject', (req, res) => {
 })
 
 
-app.post('/updateOrderStatusInfo', (req, res) => {
+app.post('/updateOrderStatusInfo',  async (req, res) => {
+
+  const connection2 = await mysql2.createConnection(process.env.DATABASE_URL);
+
+  //let conn = (await connection2).connect();
 
   if(req.body) {
     let requestData = req.body.request;
@@ -110,13 +117,10 @@ app.post('/updateOrderStatusInfo', (req, res) => {
       {
         console.log(1111);
         //1.1 Получаем объект заказа из БД по ID
-        connection.query(`select * from request where id = \"${requestData.id}\"`, function(err, rows, fields) {
-          
-          console.log(6666);
-          if(err) throw err;
-         
-          if(rows && rows.length > 0)
-          {
+
+        let [rows, fields] = await connection2.query(`select * from request where id = \"${requestData.id}\"`);
+        if(rows && rows.length > 0)
+        {
             console.log(2222);
 
             let currentOrder = rows[0];
@@ -125,74 +129,65 @@ app.post('/updateOrderStatusInfo', (req, res) => {
             {
               console.log(3333);
 
-              //Обновить только request
-              connection.query(`update request set amount = ${orderAmount} where id = \"${requestData.id}\"`, function(err1, rows1, fields1) {
-                if(err1) throw err1;
-                res.send(object);
-
-              });
+              await connection2.query(`update request set amount = ${orderAmount} where id = \"${requestData.id}\"`);
+             
+              res.send(object);
+              return;
 
             }
-            else {
+            
+            console.log(4444);
 
-              console.log(4444);
+            //Обновить request and request_status_history
+            let promises = [];
+            promises.push(connection2.query(`update request set amount = ${orderAmount}, status = ${newOrderStatus} where id = \"${requestData.id}\"`));
+            promises.push(connection2.query(`insert into request_status_history (request_id, datetime, status) values(\"${requestData.id}\", UTC_TIMESTAMP(), ${newOrderStatus})`));
+            await Promise.all(promises);
 
-              //Обновить request and request_status_history
-              connection.query(`update request set amount = ${orderAmount}, status = ${newOrderStatus} where id = \"${requestData.id}\"`, function(err1, rows1, fields1) {
-                if(err1) throw err1;
+            if(!OrderHelper.isNeedUpdateOnlyStatus(newOrderStatusId)) {
               
-                connection.query(`insert into request_status_history (request_id, datetime, status) values(\"${requestData.id}\", UTC_TIMESTAMP(), ${newOrderStatus})`, function(err2, row2, fields2) {
-                  if(err2) throw err2;
-                  
-                  if(!OrderHelper.isNeedUpdateOnlyStatus(newOrderStatusId)) {
-                
-                    //Обновить performer interaction with request 
-                    if(newOrderStatusId == OrderHelper.DISCUSSION_OF_TERMS_STATUS)
+              //Обновить performer interaction with request 
+              if(newOrderStatusId == OrderHelper.DISCUSSION_OF_TERMS_STATUS)
+              {
+                let performersString = requestData.performersForDiscussing;
+                if(performersString)
+                {
+                  let performersArray = performersString.replace(/\s+/g, '').split(',');
+                  if(performersArray && performersArray.length > 0)
+                  {
+                    let performerPromises = [];
+                    for(let i = 0; i < performersArray.length; i++)
                     {
-                      let performersString = requestData.performersForDiscussing;
-                      if(performersString)
-                      {
-                        let performersArray = performersString.replace(/\s+/g, '').split(',');
-                        if(performersArray && performersArray.length > 0)
-                        {
-                          for(let i = 0; i < performersArray.length; i++)
-                          {
-                            connection.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 2)`, function(err3, rows3, fields3) {
-                              if(err3) throw err3;
-                              //res.send(object);
-                            });
-                          }
-                        }
-                      }
+                      performerPromises.push(connection2.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 2)`));
                     }
-                    else if(newOrderStatusId == OrderHelper.CLIENT_CHOICE_PERFORMER_STATUS) 
-                    {
-                      let performersString = requestData.whoFulfillOrder;
-                      if(performersString)
-                      {
-                        let performersArray = performersString.replace(/\s+/g, '').split(',');
-                        if(performersArray && performersArray.length > 0)
-                        {
-                          for(let i = 0; i < performersArray.length; i++)
-                          {
-                            connection.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 3)`, function(err3, rows3, fields3) {
-                              if(err3) throw err3;
-                              //res.send(object);
-                            });
-                          }
-                        }
-                      }
-                    }
+                    await Promise.all(performerPromises);
                   }
-                  res.send(object);
-                })
-              });
-
+                }
+                res.send(object);
+                return;
+              }
+              if(newOrderStatusId == OrderHelper.CLIENT_CHOICE_PERFORMER_STATUS) 
+              {
+                let performersString = requestData.whoFulfillOrder;
+                if(performersString)
+                {
+                  let performersArray = performersString.replace(/\s+/g, '').split(',');
+                  let promises = [];
+                  if(performersArray && performersArray.length > 0)
+                  {
+                    let performerPromises = [];
+                    for(let i = 0; i < performersArray.length; i++)
+                    {
+                      performerPromises.push(connection2.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 3)`));
+                    }
+                    await Promise.all(performerPromises);
+                    res.send(object);
+                    return;
+                  }
+                }
+              }
             }
-          }
-          res.send(object);
-
-        });
+        }
       }
     }
   }
