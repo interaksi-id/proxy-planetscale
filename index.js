@@ -132,7 +132,7 @@ app.post('/updateOrderStatusInfo',  async (req, res) => {
             let promises = [];
             promises.push(connection2.query(`update request set amount = ${orderAmount}, status = ${newOrderStatus} where id = \"${requestData.id}\"`));
             promises.push(connection2.query(`insert into request_status_history (request_id, datetime, status) values(\"${requestData.id}\", UTC_TIMESTAMP(), ${newOrderStatus})`));
-            Promise.all(promises);
+            await Promise.all(promises);
 
             if(!OrderHelper.isNeedUpdateOnlyStatus(newOrderStatusId)) {
               
@@ -168,7 +168,7 @@ app.post('/updateOrderStatusInfo',  async (req, res) => {
                     {
                       performerPromises.push(connection2.query(`insert into performer_interaction_with_request (request_id, performer_id, datetime, action) values(\"${requestData.id}\", \"${performersArray[i]}\", UTC_TIMESTAMP(), 3)`));
                     }
-                    Promise.all(performerPromises);
+                    await Promise.all(performerPromises);
                   }
                 }
               }
