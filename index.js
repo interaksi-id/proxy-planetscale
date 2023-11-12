@@ -96,6 +96,42 @@ app.post('/getPerformerObject', (req, res) => {
 })
 
 
+app.post('/getInfoForAdConversion', async (req, res) => {
+  
+  const connection2 = await mysql2.createConnection(process.env.DATABASE_URL);
+  
+  let result = {
+    isNeedToSendConversion : false
+  };
+
+  if(!req.body) res.send(result);
+
+  let requestData = req.body.request;
+  if(!requestData.id) res.send(result);
+  
+  let [rows, fields] = await connection2.query(`select * from request where id = \"${requestData.id}\"`);
+  if(!rows || rows.length == 0) res.send(result);
+
+  let currentOrder = rows[0];
+  let currentStatus = currentOrder.status;
+  let currentAdUrl = currentOrder.refferal_url;
+  let orderAmount = requestData.finalPrice ?? requestData.advancePrice;
+  let parsedUrl = OrderHelper.parseOrderAdUrl(currentAdUrl);
+
+  result = {
+    isNeedToSendConversion: OrderHelper.isNeedToSendAdEvent(currentStatus),
+    adType: parsedUrl.adType,
+    adClickId: parsedUrl.adClickId,
+    eventName: OrderHelper.getAdEventName(currentStatus),
+    amount: orderAmount,
+    currentDateTime: new Date().getTime()
+  }
+
+  res.send(result);
+
+})
+
+
 app.post('/updateOrderStatusInfo',  async (req, res) => {
 
   const connection2 = await mysql2.createConnection(process.env.DATABASE_URL);

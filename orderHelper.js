@@ -14,6 +14,19 @@ class OrderHelper {
     static MISSED_STATUS = "652e48f55b4b5aa9862bede1";
     static REFUSAL_BY_CLIENT = "652e48fc50acfc9c6d14a617";
     static REFUSAL_BY_PERFORMER = "652e49052a7391778cc7aaf9";
+    
+    static VERIFIED_STATUS_IN_NUMBER = 7;
+    static DISCUSSION_OF_TERMS_STATUS_IN_NUMBER = 8;
+    static CLIENT_CHOICE_PERFORMER_IN_NUMBER = 9;
+    static COMPLETED_STATUS_IN_NUMBER = 10;
+
+    static GOOGLE_AD_TYPE_TAG = "gclid";
+    static FACEBOOK_AD_TYPE_TAG = "fbclid";
+    static TIKTOK_AD_TYPE_TAG = "ttclid";
+    static VERIFIED_CONVERSION_NAME = "6688394384";
+    static CONNECTED_CONVERSION_NAME = "6688314228";
+    static AGREED_CONVERSION_NAME = "6688307224";
+    static COMPLETED_CONVERSION_NAME = "6688308217";
 
     static getOrderStatusById(id) {
         if(id)
@@ -95,6 +108,54 @@ class OrderHelper {
 
     static isNeedUpdateOnlyStatus(orderStatusId) {
         return (orderStatusId != this.DISCUSSION_OF_TERMS_STATUS && orderStatusId != this.CLIENT_CHOICE_PERFORMER_STATUS);
+    }
+
+    static parseOrderAdUrl(url) {
+        let result = {
+            adType: "",
+            adClickId: ""
+        }
+
+        if(!url) return result;
+
+        if(url.includes(this.GOOGLE_AD_TYPE_TAG + "=")) {
+            result.adType = "Google"; 
+            result.adClickId = url.split(this.GOOGLE_AD_TYPE_TAG + "=")[1];
+
+        }
+        if(url.includes(this.FACEBOOK_AD_TYPE_TAG + "=")) {
+            result.adType = "FB"; 
+            result.adClickId = url.split(this.FACEBOOK_AD_TYPE_TAG + "=")[1];
+        }
+
+        if(url.includes(this.TIKTOK_AD_TYPE_TAG + "=")) {
+            result.adType = "TT"; 
+            result.adClickId = url.split(this.TIKTOK_AD_TYPE_TAG + "=")[1];
+        }
+
+        return result;
+    }
+
+    static isNeedToSendAdEvent(currentOrderStatus) {
+        return ((currentOrderStatus == this.VERIFIED_STATUS_IN_NUMBER) || (currentOrderStatus == this.DISCUSSION_OF_TERMS_STATUS_IN_NUMBER) || (currentOrderStatus == this.CLIENT_CHOICE_PERFORMER_IN_NUMBER) || (currentOrderStatus == this.COMPLETED_STATUS_IN_NUMBER));
+    }
+
+    static getAdEventName(currentOrderStatus) {
+        if(!currentOrderStatus) return "";
+        
+        switch(currentOrderStatus) 
+        {
+            case this.VERIFIED_STATUS_IN_NUMBER:
+                return this.VERIFIED_CONVERSION_NAME;
+            case this.DISCUSSION_OF_TERMS_STATUS_IN_NUMBER:
+                return this.CONNECTED_CONVERSION_NAME;
+            case this.CLIENT_CHOICE_PERFORMER_IN_NUMBER:
+                return this.AGREED_CONVERSION_NAME;
+            case this.COMPLETED_STATUS_IN_NUMBER:
+                return this.CONNECTED_CONVERSION_NAME;
+            default:
+                return "";
+        }
     }
 
 
