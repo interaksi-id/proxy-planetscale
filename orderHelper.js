@@ -152,7 +152,7 @@ class OrderHelper {
             case this.CLIENT_CHOICE_PERFORMER_IN_NUMBER:
                 return this.AGREED_CONVERSION_NAME;
             case this.COMPLETED_STATUS_IN_NUMBER:
-                return this.CONNECTED_CONVERSION_NAME;
+                return this.COMPLETED_CONVERSION_NAME;
             default:
                 return "";
         }
