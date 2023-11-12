@@ -115,7 +115,7 @@ app.post('/getInfoForAdConversion', async (req, res) => {
   let currentOrder = rows[0];
   let currentStatus = currentOrder.status;
   let currentAdUrl = currentOrder.refferal_url;
-  let orderAmount = requestData.finalPrice ?? requestData.advancePrice;
+  let orderAmount = (requestData.finalPrice && requestData.finalPrice !== "") ? requestData.finalPrice : requestData.advancePrice;
   let parsedUrl = OrderHelper.parseOrderAdUrl(currentAdUrl);
 
   result = {
