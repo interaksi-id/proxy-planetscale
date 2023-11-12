@@ -124,7 +124,7 @@ app.post('/getInfoForAdConversion', async (req, res) => {
     adClickId: parsedUrl.adClickId,
     eventName: OrderHelper.getAdEventName(currentStatus),
     amount: orderAmount,
-    currentDateTime: new Date().getTime()
+    currentDateTime: new Date()
   }
 
   res.send(result);
