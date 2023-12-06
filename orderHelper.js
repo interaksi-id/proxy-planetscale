@@ -27,6 +27,10 @@ class OrderHelper {
     static CONNECTED_CONVERSION_NAME = "6688314228";
     static AGREED_CONVERSION_NAME = "6688307224";
     static COMPLETED_CONVERSION_NAME = "6688308217";
+    static VERIFIED_CONVERSION_NAME_STR = "order_verified";
+    static CONNECTED_CONVERSION_NAME_STR = "order_connected";
+    static AGREED_CONVERSION_NAME_STR = "order_agreed";
+    static COMPLETED_CONVERSION_NAME_STR = "order_completed";
 
     static getOrderStatusById(id) {
         if(id)
@@ -140,22 +144,53 @@ class OrderHelper {
         return ((currentOrderStatus == this.VERIFIED_STATUS_IN_NUMBER) || (currentOrderStatus == this.DISCUSSION_OF_TERMS_STATUS_IN_NUMBER) || (currentOrderStatus == this.CLIENT_CHOICE_PERFORMER_IN_NUMBER) || (currentOrderStatus == this.COMPLETED_STATUS_IN_NUMBER));
     }
 
-    static getAdEventName(currentOrderStatus) {
+    static getAdEventName(currentOrderStatus, adType) {
         if(!currentOrderStatus) return "";
         
-        switch(currentOrderStatus) 
+        if(adType == "Google")
         {
-            case this.VERIFIED_STATUS_IN_NUMBER:
-                return this.VERIFIED_CONVERSION_NAME;
-            case this.DISCUSSION_OF_TERMS_STATUS_IN_NUMBER:
-                return this.CONNECTED_CONVERSION_NAME;
-            case this.CLIENT_CHOICE_PERFORMER_IN_NUMBER:
-                return this.AGREED_CONVERSION_NAME;
-            case this.COMPLETED_STATUS_IN_NUMBER:
-                return this.COMPLETED_CONVERSION_NAME;
-            default:
-                return "";
+            switch(currentOrderStatus) 
+            {
+                case this.VERIFIED_STATUS_IN_NUMBER:
+                    return this.VERIFIED_CONVERSION_NAME;
+                case this.DISCUSSION_OF_TERMS_STATUS_IN_NUMBER:
+                    return this.CONNECTED_CONVERSION_NAME;
+                case this.CLIENT_CHOICE_PERFORMER_IN_NUMBER:
+                    return this.AGREED_CONVERSION_NAME;
+                case this.COMPLETED_STATUS_IN_NUMBER:
+                    return this.COMPLETED_CONVERSION_NAME;
+                default:
+                    return "";
+            }
         }
+        if(adType == "FB")
+        {
+            switch(currentOrderStatus) 
+            {
+                case this.VERIFIED_STATUS_IN_NUMBER:
+                    return this.VERIFIED_CONVERSION_NAME_STR;
+                case this.DISCUSSION_OF_TERMS_STATUS_IN_NUMBER:
+                    return this.CONNECTED_CONVERSION_NAME_STR;
+                case this.CLIENT_CHOICE_PERFORMER_IN_NUMBER:
+                    return this.AGREED_CONVERSION_NAME_STR;
+                case this.COMPLETED_STATUS_IN_NUMBER:
+                    return this.COMPLETED_CONVERSION_NAME_STR;
+                default:
+                    return "";
+            }
+        }
+
+        return "";
+        
+    }
+
+    static clearPhoneNumber(phone) {
+        let forbiddenChars = ['+', ' ', '-']
+
+        for (let char of forbiddenChars){
+            phone = phone.split(char).join('');
+        }
+        return phone
     }
 
 

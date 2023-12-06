@@ -113,18 +113,27 @@ app.post('/getInfoForAdConversion', async (req, res) => {
   if(!rows || rows.length == 0) res.send(result);
 
   let currentOrder = rows[0];
+  console.log(currentOrder);
   let currentStatus = currentOrder.status;
   let currentAdUrl = currentOrder.refferal_url;
+  let createdDate = currentOrder.created_date;
+  let email = currentOrder.client_email;
+  let phone = currentOrder.client_phone;
+
   let orderAmount = (requestData.finalPrice && requestData.finalPrice !== "") ? requestData.finalPrice : requestData.advancePrice;
   let parsedUrl = OrderHelper.parseOrderAdUrl(currentAdUrl);
+
 
   result = {
     isNeedToSendConversion: OrderHelper.isNeedToSendAdEvent(currentStatus),
     adType: parsedUrl.adType,
     adClickId: parsedUrl.adClickId,
-    eventName: OrderHelper.getAdEventName(currentStatus),
+    eventName: OrderHelper.getAdEventName(currentStatus, parsedUrl.adType),
     amount: orderAmount,
-    currentDateTime: new Date()
+    currentDateTime: new Date(),
+    cretedOrderUnixTime: new Date(createdDate).getTime(),
+    clientEmail:  email,
+    clientPhone: OrderHelper.clearPhoneNumber(phone)
   }
 
   res.send(result);
