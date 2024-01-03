@@ -130,6 +130,58 @@ app.post('/getPerformerObject', (req, res) => {
   }
 })
 
+app.post('/getRelevantTutors', async (req, res) => {
+
+  const connection2 = await mysql2.createConnection(process.env.DATABASE_URL);
+
+  let result = {
+    isNeedToSendOrderToPerformers: false
+  };
+
+  if(!req.body) res.send(result);
+
+  let requestData = req.body.request;
+
+  if(!requestData) res.send(result);
+
+  let clientEnglishLevelInOrder = requestData.clientEnglishLevel;
+  let enlishTypeInOrder = requestData.englishType;
+
+  let [tutors, fields] = await connection2.query(`select * from performer where service_category like '%Guru Bahasa Inggris%' and is_active = 1`);
+  if(!tutors || tutors.length == 0) res.send(result);
+
+  if(clientEnglishLevelInOrder !== OrderHelper.ALL_LEVELS_OF_ENGLISH) {
+
+    let filteredTutorsByLevelOfEnglish = [];
+    for(let i = 0; i < tutors.length; i++) {
+      if(tutors[i].client_english_leavel && tutors[i].client_english_leavel.includes(clientEnglishLevelInOrder)) {
+        filteredTutorsByLevelOfEnglish.push(tutors[i]);
+      }
+    }
+
+    tutors = filteredTutorsByLevelOfEnglish;
+  }
+
+  if(enlishTypeInOrder !== OrderHelper.ALL_ENGLISH_TYPE) {
+
+    let filteredTutorsByEnglishType = [];
+    for(let i = 0; i < tutors.length; i++) {
+      if(tutors[i].english_type && tutors[i].english_type.includes(enlishTypeInOrder)) {
+        filteredTutorsByEnglishType.push(tutors[i]);
+      }
+    }
+
+    tutors = filteredTutorsByEnglishType;
+
+  }
+
+  result.phones = tutors.filter(x => x.phone && x.phone !== '').map(_ => _.phone).join(',');
+  result.isNeedToSendOrderToPerformers = true;
+
+  res.send(result);
+
+
+})
 
 app.post('/getInfoForAdConversion', async (req, res) => {
   

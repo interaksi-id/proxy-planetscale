@@ -8,6 +8,7 @@ create table performer (
     client_english_leavel varchar(1000) null,
     english_type varchar(1000) null,
     design_type varchar(1000) null,
+    phone varchar(100) null,
     constraint performer_pk primary key (id)    
 )
 

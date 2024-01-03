@@ -32,6 +32,10 @@ class OrderHelper {
     static AGREED_CONVERSION_NAME_STR = "order_agreed";
     static COMPLETED_CONVERSION_NAME_STR = "order_completed";
 
+    static ALL_LEVELS_OF_ENGLISH = "659515e4939aa155bf429797";
+    static ALL_ENGLISH_TYPE = "6595186f63c9543caf8023a1";
+    static ALL_DESING_TYPE = "65951d047a4d47c6fea8019d";
+
     static getOrderStatusById(id) {
         if(id)
         {
