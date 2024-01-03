@@ -175,7 +175,7 @@ app.post('/getRelevantTutors', async (req, res) => {
 
   }
 
-  result.phones = tutors.filter(x => x.phone && x.phone !== '');//.map(_ => _.phone).join(',');
+  result.phones = tutors.filter(x => x.phone && x.phone !== '').map(_ => _.phone);//.join(',');
   result.isNeedToSendOrderToPerformers = true;
 
   res.send(result);
