@@ -45,6 +45,10 @@ app.post('/getPerformerObject', (req, res) => {
 
       let cities = "";
       let cityArray = [];
+
+      let levelOfStudents = "";
+      let englishTypes = "";
+      let designTypes = "";
       
       if(requestData.cities)
       {
@@ -81,10 +85,41 @@ app.post('/getPerformerObject', (req, res) => {
 
         
       }
+
+      if(requestData.levelOfStudents)
+      {
+        let requestLevelOfStudents = requestData.levelOfStudents.replace(/\s+/g, '').split(',');
+        if(requestLevelOfStudents && requestLevelOfStudents.length > 0)
+        {
+          levelOfStudents = requestLevelOfStudents.join('|');
+        }
+      }
+
+      if(requestData.englishType)
+      {
+        let requestEnglishTypes = requestData.englishType.replace(/\s+/g, '').split(',');
+        if(requestEnglishTypes && requestEnglishTypes.length > 0)
+        {
+          englishTypes = requestEnglishTypes.join('|');
+        }
+      }
+
+      if(requestData.designType)
+      {
+        let requestDesignTypes = requestData.designType.replace(/\s+/g, '').split(',');
+        if(requestDesignTypes && requestDesignTypes.length > 0)
+        {
+          designTypes = requestDesignTypes.join('|');
+        }
+      }
+
       
       let object = {
         category: categories,
         cities: cities,
+        levelOfStudents: levelOfStudents,
+        englishType: englishTypes,
+        designType: designTypes,
         isTutor: PerformerHelper.isTutor(categoryArray),
         isDesigner: PerformerHelper.isDesigner(categoryArray),
         isPhotographer: PerformerHelper.isPhotographer(categoryArray)

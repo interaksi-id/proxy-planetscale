@@ -5,6 +5,9 @@ create table performer (
     link varchar(1000) not null,
     service_category varchar(100) not null,
     is_active bit not null,
+    client_english_leavel varchar(1000) null,
+    english_type varchar(1000) null,
+    design_type varchar(1000) null,
     constraint performer_pk primary key (id)    
 )
 
