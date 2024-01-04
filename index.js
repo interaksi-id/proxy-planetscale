@@ -180,8 +180,49 @@ app.post('/getRelevantTutors', async (req, res) => {
 
   res.send(result);
 
+})
+
+
+app.post('/getRelevantDesigners', async (req, res) => {
+
+  const connection2 = await mysql2.createConnection(process.env.DATABASE_URL);
+
+  let result = {
+    isNeedToSendOrderToPerformers: false
+  };
+
+  if(!req.body) res.send(result);
+
+  let requestData = req.body.request;
+
+  if(!requestData) res.send(result);
+
+  let designTypeInOrder = requestData.designType;
+
+  let [designers, fields] = await connection2.query(`select * from performer where service_category like '%Desainer%' and is_active = 1`);
+  if(!designers || designers.length == 0) res.send(result);
+
+  if(designTypeInOrder !== OrderHelper.ALL_DESING_TYPE) {
+
+    let filteredDesignersByDesignType = [];
+    for(let i = 0; i < designers.length; i++) {
+      if(designers[i].english_type && designers[i].design_type.includes(designTypeInOrder)) {
+        filteredDesignersByDesignType.push(designers[i]);
+      }
+    }
+
+    designers = filteredDesignersByDesignType;
+
+  }
+
+  result.phones = designers.filter(x => x.phone && x.phone !== '').map(_ => _.phone).join(',');
+  result.isNeedToSendOrderToPerformers = true;
+
+  res.send(result);
+  
 
 })
+
 
 app.post('/getInfoForAdConversion', async (req, res) => {
   
