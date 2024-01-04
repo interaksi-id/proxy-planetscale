@@ -206,7 +206,7 @@ app.post('/getRelevantDesigners', async (req, res) => {
 
     let filteredDesignersByDesignType = [];
     for(let i = 0; i < designers.length; i++) {
-      if(designers[i].english_type && designers[i].design_type.includes(designTypeInOrder)) {
+      if(designers[i].design_type && designers[i].design_type.includes(designTypeInOrder)) {
         filteredDesignersByDesignType.push(designers[i]);
       }
     }
