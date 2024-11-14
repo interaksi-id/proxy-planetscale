@@ -46,7 +46,15 @@ class SegmentationHelper {
                 value: 3
             },
             {
+                name: "For work/TOEFL",
+                value: 6
+            },
+            {
                 name: "Untuk masuk universitas luar negeri",
+                value: 2
+            },
+            {
+                name: "Study abroad",
                 value: 2
             },
             {
@@ -63,6 +71,10 @@ class SegmentationHelper {
             },
             {
                 name: "Lainnya",
+                value: 1
+            },
+            {
+                name: "Travel/Other",
                 value: 1
             }
         ]
@@ -107,10 +119,13 @@ class SegmentationHelper {
         if(resultsDate)
         {
             if(resultsDate == "dalam 1 bulan") count = 5;
+            if(resultsDate == "1-3months") count = 5;
             if(resultsDate == "dalam 3 bulan") count = 4;
             if(resultsDate == "dalam 6 bulan") count = 2;
+            if(resultsDate == "6months") count = 2;
             if(resultsDate == "dalam setahun") count = 1;
             if(resultsDate == "tidak ada pertanyaan") count = 0;
+            if(resultsDate == "not urgent") count = 0;
         }
 
         return count;
