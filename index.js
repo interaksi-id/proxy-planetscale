@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express')
 var bodyParser = require('body-parser');
 const { PerformerHelper } = require('./performerHelper');
+const { SegmentationHelper } = require('./segmentationHelper.js');
 const app = express()
 const port = process.env.PORT || 3000
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -15,6 +16,36 @@ const { OrderHelper } = require('./orderHelper');
 
 
 app.post('/getClientSegment', (req, res) => {
+
+  let result = {
+    segment: "E",
+    totalCount : 0
+  }
+
+  if(!req.body) res.send(result);
+
+  let requestData = req.body.request;
+  if(!requestData) res.send(result);
+
+  let age = requestData.age;
+  let computer = requestData.computer;
+  let previousExperience = requestData.previousExperience;
+  let englishGoals = requestData.englishGoals;
+  let monthlyBudget = requestData.monthlyBudget;
+  let resultsDate = requestData.resultsDate;
+
+  let totalCount = 0;
+  totalCount += SegmentationHelper.getAgeCount(age);
+  totalCount += SegmentationHelper.getComputerCount(computer);
+  totalCount += SegmentationHelper.getPreviosExperienceCount(previousExperience);
+  totalCount += SegmentationHelper.getEnglishGoalsCount(englishGoals);
+  totalCount += SegmentationHelper.getMonthlyBudgetCount(monthlyBudget);
+  totalCount += SegmentationHelper.getResultsDateCount(resultsDate);
+
+  result.segment = SegmentationHelper.getSegmentName(totalCount);
+  result.totalCount = totalCount;
+
+  res.send(result);
 
 
 })
