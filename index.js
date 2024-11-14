@@ -13,6 +13,33 @@ const { OrderHelper } = require('./orderHelper');
 //const connection = mysql.createConnection(process.env.DATABASE_URL);
 
 
+
+app.post('/getClientSegment', (req, res) => {
+
+
+})
+
+app.post('/getClearPhoneNumber', (req, res) => {
+
+  let result = {
+    phone: ''
+  }
+
+  if(!req.body) res.send(result);
+
+  let requestData = req.body.request;
+
+  if(!requestData) res.send(result);
+
+  let phone = requestData.phone;
+  if(!phone) res.send(result);
+
+  result.phone = phone.replaceAll('+','').replaceAll('-','').replaceAll(' ', '');
+  res.send(result);
+
+})
+ 
+
 app.post('/postData', (req, res) => {
 
   const connection = mysql.createConnection(process.env.DATABASE_URL);
