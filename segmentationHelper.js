@@ -3,12 +3,13 @@ class SegmentationHelper {
     static getAgeCount(age) {
 
         let count = 0;
-        if(age && age > 0)
+        let parsedAge = parseInt(age);
+        if(parsedAge && parsedAge > 0)
         {
-            if(age < 18) count = 0;
-            if(age >= 18 && age <= 24) count = 1;
-            if(age >= 25 && age <= 40) count = 3; 
-            if(age >= 41) count = 1;
+            if(parsedAge < 18) count = 0;
+            if(parsedAge >= 18 && parsedAge <= 24) count = 1;
+            if(parsedAge >= 25 && parsedAge <= 40) count = 3; 
+            if(parsedAge >= 41) count = 1;
         }
 
         return count;
