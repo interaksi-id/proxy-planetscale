@@ -16,6 +16,22 @@ class SegmentationHelper {
 
     }
 
+    static getAgeCountForChild(age) {
+
+        let count = 0;
+        let parsedAge = parseInt(age);
+        if(parsedAge && parsedAge > 0)
+        {
+            if(parsedAge < 4 && parsedAge >= 18) count = 0;
+            if(parsedAge >= 4 && parsedAge <= 6) count = 1;
+            if(parsedAge >= 7 && parsedAge <= 10) count = 2; 
+            if(parsedAge >= 11 && parsedAge <= 17) count = 3; 
+        }
+
+        return count;
+
+    }
+
     static getComputerCount(isHasComputer)
     {
         let count = 0;
@@ -23,7 +39,21 @@ class SegmentationHelper {
         return count;
     }
 
+    static getComputerCountForChild(isHasComputer)
+    {
+        let count = 0;
+        if(isHasComputer) count = 3;
+        return count;
+    }
+
     static getPreviosExperienceCount(isHasExperience)
+    {
+        let count = 0;
+        if(isHasExperience) count = 3;
+        return count;
+    }
+
+    static getPreviosExperienceCountForChild(isHasExperience)
     {
         let count = 0;
         if(isHasExperience) count = 3;
@@ -97,6 +127,74 @@ class SegmentationHelper {
 
     }
 
+    static getClassExpectationCountForChild(parentExpectations)
+    {
+        let count = 0;
+        let expectations = [
+            {
+                name: "Nilai yang baik",
+                value: 2
+            },
+            {
+                name: "Mulai bisa berbicara",
+                value: 1
+            },
+            {
+                name: "Tata bahasa yang lebih baik",
+                value: 3
+            }
+        ]
+
+        if(parentExpectations)
+        {
+            let splittedExpectations = parentExpectations.split('|');
+            if(splittedExpectations && splittedExpectations.length > 0)
+            {
+                for(let i = 0; i < splittedExpectations.length; i++)
+                {
+                    let findedObject = expectations.find(x => x.name == splittedExpectations[i]);
+                    if(findedObject) count += findedObject.value;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    static getFavouriteSubjectCountForChild(favouriteSubject)
+    {
+        let count = 0;
+        let subjects = [
+            {
+                name: "Matematika",
+                value: 1
+            },
+            {
+                name: "Sastra",
+                value: 2
+            },
+            {
+                name: "Bahasa",
+                value: 4
+            }
+        ]
+
+        if(favouriteSubject)
+        {
+            let splittedSubjects = favouriteSubject.split('|');
+            if(splittedSubjects && splittedSubjects.length > 0)
+            {
+                for(let i = 0; i < splittedSubjects.length; i++)
+                {
+                    let findedObject = subjects.find(x => x.name == splittedSubjects[i]);
+                    if(findedObject) count += findedObject.value;
+                }
+            }
+        }
+
+        return count;
+    }
+
     static getMonthlyBudgetCount(monthltyBudget) {
         
         let count = 0;
@@ -121,6 +219,26 @@ class SegmentationHelper {
         {
             if(resultsDate == "dalam 1 bulan") count = 5;
             if(resultsDate == "1-3months") count = 5;
+            if(resultsDate == "dalam 3 bulan") count = 4;
+            if(resultsDate == "dalam 6 bulan") count = 2;
+            if(resultsDate == "6months") count = 2;
+            if(resultsDate == "dalam setahun") count = 1;
+            if(resultsDate == "tidak ada pertanyaan") count = 0;
+            if(resultsDate == "not urgent") count = 0;
+        }
+
+        return count;
+
+    }
+
+    static getResultsDateCountForChild(resultsDate) {
+       
+        let count = 0;
+
+        if(resultsDate)
+        {
+            if(resultsDate == "dalam 1 bulan") count = 4;
+            if(resultsDate == "1-3months") count = 4;
             if(resultsDate == "dalam 3 bulan") count = 4;
             if(resultsDate == "dalam 6 bulan") count = 2;
             if(resultsDate == "6months") count = 2;

@@ -50,6 +50,48 @@ app.post('/getClientSegment', (req, res) => {
 
 })
 
+app.post('/getClientSegmentForChild', (req, res) => {
+
+  let result = {
+    segment: "E",
+    totalCount : 0
+  }
+
+  if(!req.body) res.send(result);
+
+  let requestData = req.body.request;
+  if(!requestData) res.send(result);
+
+  let age = requestData.age;
+  let computer = requestData.computer;
+  let previousExperience = requestData.previousExperience;
+  let favouriteSubjects = requestData.favouriteSubjects;
+  let parentExpectations = requestData.parentExpectations;
+  
+  //let englishGoals = requestData.englishGoals;
+  let monthlyBudget = requestData.monthlyBudget;
+  let resultsDate = requestData.resultsDate;
+
+  let totalCount = 0;
+  totalCount += SegmentationHelper.getAgeCountForChild(age);
+  totalCount += SegmentationHelper.getComputerCountForChild(computer);
+  totalCount += SegmentationHelper.getPreviosExperienceCountForChild(previousExperience);
+  totalCount += SegmentationHelper.getFavouriteSubjectCountForChild(favouriteSubjects);
+  totalCount += SegmentationHelper.getClassExpectationCountForChild(parentExpectations);
+  totalCount += SegmentationHelper.getMonthlyBudgetCount(monthlyBudget);
+  totalCount += SegmentationHelper.getResultsDateCountForChild(resultsDate);
+
+  result.segment = SegmentationHelper.getSegmentName(totalCount);
+  result.totalCount = totalCount;
+
+  res.send(result);
+
+
+})
+
+
+
+
 app.post('/getClearPhoneNumber', (req, res) => {
 
   let result = {
