@@ -11,9 +11,80 @@ app.use(bodyParser.json())
 const mysql = require('mysql2');
 const mysql2 = require('mysql2/promise');
 const { OrderHelper } = require('./orderHelper');
-//const connection = mysql.createConnection(process.env.DATABASE_URL);
+
+const bizSdk = require('facebook-nodejs-business-sdk');
+const Content = bizSdk.Content;
+const CustomData = bizSdk.CustomData;
+const DeliveryCategory = bizSdk.DeliveryCategory;
+const EventRequest = bizSdk.EventRequest;
+const UserData = bizSdk.UserData;
+const ServerEvent = bizSdk.ServerEvent;
+const access_token = 'EAAIaBbCZAMigBOyqxVYiZAPzhIZBZCZBILJuOxb4i8f5owCzCn4ABAXsrM05ITHDOd920TlbV3rimqZATa66YyyjuctGirNLFpqmAB7C8m9eG5w5ktp5f1IWzSKxBzJLHKmJPTCRM8enzyhM0fMJZB2IJo9qWFCD0eHNbMtn4dI0Nl1SVWbLGUFR68ZAMCZBeFnv2pgZDZD';
+const pixel_id = '813469980493460';
+const api = bizSdk.FacebookAdsApi.init(access_token);
+
+let current_timestamp = Math.floor(new Date() / 1000);
 
 
+app.post('/submitEventToFb', (req, res) => {
+  let result = {
+    status: "Error"
+  }
+
+
+  if(!req.body) res.send(result);
+
+  let requestData = req.body;
+  if(!requestData) res.send(result);
+
+  
+
+  let phoneNumber = requestData.phone;
+  let referralUrl = requestData.refferalUrl; 
+  let fbClickId = OrderHelper.parseOrderAdUrl(referralUrl);
+  if(!fbClickId || !fbClickId.adClickId) res.send(result);
+
+  const userData = (new UserData())
+                .setPhones([phoneNumber])
+                // It is recommended to send Client IP and User Agent for Conversions API Events.
+                //.setClientIpAddress(request.connection.remoteAddress)
+                //.setClientUserAgent(request.headers['user-agent'])
+                .setFbc(`fb.1.${current_timestamp}.${fbClickId}`);
+
+
+  const content = (new Content())
+                .setId(phoneNumber)
+                .setQuantity(1);
+
+  const customData = (new CustomData())
+                .setContents([content]);
+                
+
+  const serverEvent = (new ServerEvent())
+                .setEventName('MeetingProposal')
+                .setEventTime(current_timestamp)
+                .setUserData(userData)
+                .setCustomData(customData);
+  
+
+  const eventsData = [serverEvent];
+  const eventRequest = (new EventRequest(access_token, pixel_id))
+                  .setEvents(eventsData);
+  
+  eventRequest.execute().then(
+    response => {
+      console.log('Response: ', response);
+      result.status = "OK";
+      res.send(result);
+    },
+    err => {
+      console.error('Error: ', err);
+      res.send(result);
+    }
+  );
+
+
+})
 
 app.post('/getClientSegment', (req, res) => {
 
