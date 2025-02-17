@@ -40,17 +40,27 @@ app.post('/submitEventToFb', (req, res) => {
   
 
   let phoneNumber = requestData.phone;
-  let referralUrl = requestData.refferalUrl; 
-  let fbClickId = OrderHelper.parseOrderAdUrl(referralUrl);
-  if(!fbClickId || !fbClickId.adClickId) res.send(result);
+  let fbp = requestData.fbp;
+  let fbc = requestData.fbc;
+  let userAgent = requestData.userAgent;
+  let ip = requestData.ip;
+  let clientName = requestData.name;
+  let externalId = requestData.externalId;
+
+  //let referralUrl = requestData.refferalUrl; 
+  //let fbClickId = OrderHelper.parseOrderAdUrl(referralUrl);
+  //if(!fbClickId || !fbClickId.adClickId) res.send(result);
 
   const userData = (new UserData())
                 .setPhones([phoneNumber])
+                .setFirstName(clientName)
+                
                 // It is recommended to send Client IP and User Agent for Conversions API Events.
-                //.setClientIpAddress(request.connection.remoteAddress)
-                //.setClientUserAgent(request.headers['user-agent'])
-                .setFbc(`fb.1.${current_timestamp}.${fbClickId}`);
-
+                .setClientIpAddress(ip)
+                .setClientUserAgent(userAgent)
+                .setFbc(fbc)
+                .setFbp(fbp)
+                .setAppUserId(externalId)
 
   const content = (new Content())
                 .setId(phoneNumber)
