@@ -6,10 +6,9 @@ class SegmentationHelper {
         let parsedAge = parseInt(age);
         if(parsedAge && parsedAge > 0)
         {
-            if(parsedAge < 18) count = 0;
-            if(parsedAge >= 18 && parsedAge <= 24) count = 1;
-            if(parsedAge >= 25 && parsedAge <= 40) count = 3; 
-            if(parsedAge >= 41) count = 1;
+            if(parsedAge < 24) count = 0;
+            if(parsedAge >= 25 && parsedAge <= 40) count = 1; 
+            if(parsedAge >= 41) count = 3;
         }
 
         return count;
@@ -48,7 +47,7 @@ class SegmentationHelper {
 
     static getPreviosExperienceCount(isHasExperience)
     {
-        let count = 0;
+        let count = 1;
         if(isHasExperience) count = 3;
         return count;
     }
@@ -66,7 +65,7 @@ class SegmentationHelper {
         let goals = [
             {
                 name: "Supaya lulus wawancara di perusahaan internasional",
-                value: 3
+                value: 0
             },
             {
                 name: "Untuk Meningkatkan komunikasi di kerjaan saat ini",
@@ -78,7 +77,7 @@ class SegmentationHelper {
             },
             {
                 name: "For work/TOEFL",
-                value: 6
+                value: 3
             },
             {
                 name: "Untuk masuk universitas luar negeri",
@@ -255,10 +254,10 @@ class SegmentationHelper {
     {
         let segmentName = "E";
 
-        if(totalCount >= 17 && totalCount <= 22) segmentName = "A";
-        if(totalCount >= 13 && totalCount <= 16) segmentName = "B";
-        if(totalCount >= 6 && totalCount <= 12) segmentName = "C";
-        if(totalCount >= 0 && totalCount <= 5) segmentName = "D";
+        if(totalCount >= 14 && totalCount <= 19) segmentName = "A";
+        if(totalCount >= 10 && totalCount <= 13) segmentName = "B";
+        if(totalCount >= 3 && totalCount <= 9) segmentName = "C";
+        if(totalCount >= 0 && totalCount <= 2) segmentName = "D";
 
         return segmentName;
     }
