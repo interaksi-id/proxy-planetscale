@@ -254,10 +254,10 @@ class SegmentationHelper {
     {
         let segmentName = "E";
 
-        if(totalCount >= 14 && totalCount <= 19) segmentName = "A";
-        if(totalCount >= 10 && totalCount <= 13) segmentName = "B";
-        if(totalCount >= 3 && totalCount <= 9) segmentName = "C";
-        if(totalCount >= 0 && totalCount <= 2) segmentName = "D";
+        if(totalCount >= 16 && totalCount <= 19) segmentName = "A";
+        if(totalCount >= 12 && totalCount <= 15) segmentName = "B";
+        if(totalCount >= 8 && totalCount <= 11) segmentName = "C";
+        if(totalCount >= 0 && totalCount <= 7) segmentName = "D";
 
         return segmentName;
     }
