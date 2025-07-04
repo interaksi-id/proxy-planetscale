@@ -20,7 +20,7 @@ const EventRequest = bizSdk.EventRequest;
 const UserData = bizSdk.UserData;
 const ServerEvent = bizSdk.ServerEvent;
 const access_token = 'EAAIaBbCZAMigBOyqxVYiZAPzhIZBZCZBILJuOxb4i8f5owCzCn4ABAXsrM05ITHDOd920TlbV3rimqZATa66YyyjuctGirNLFpqmAB7C8m9eG5w5ktp5f1IWzSKxBzJLHKmJPTCRM8enzyhM0fMJZB2IJo9qWFCD0eHNbMtn4dI0Nl1SVWbLGUFR68ZAMCZBeFnv2pgZDZD';
-const pixel_id = '813469980493460';
+const pixel_id = '472838195783874';
 const api = bizSdk.FacebookAdsApi.init(access_token);
 
 let current_timestamp = Math.floor(new Date() / 1000);
