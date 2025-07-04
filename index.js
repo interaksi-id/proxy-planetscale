@@ -46,10 +46,8 @@ app.post('/submitEventToFb', (req, res) => {
   let ip = requestData.ip;
   let clientName = requestData.name;
   let externalId = requestData.externalId;
+  let eventName = requestData.eventName;
 
-  //let referralUrl = requestData.refferalUrl; 
-  //let fbClickId = OrderHelper.parseOrderAdUrl(referralUrl);
-  //if(!fbClickId || !fbClickId.adClickId) res.send(result);
 
   const userData = (new UserData())
                 .setPhones([phoneNumber])
@@ -71,7 +69,7 @@ app.post('/submitEventToFb', (req, res) => {
                 
 
   const serverEvent = (new ServerEvent())
-                .setEventName('MeetingProposal')
+                .setEventName(eventName)
                 .setEventTime(current_timestamp)
                 .setUserData(userData)
                 .setCustomData(customData);
