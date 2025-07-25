@@ -49,6 +49,7 @@ app.post('/submitEventToFb', (req, res) => {
   let clientName = requestData.name;
   let externalId = requestData.externalId;
   let eventName = requestData.eventName;
+  let email = requestData.email;
 
 
   const userData = (new UserData())
@@ -60,7 +61,9 @@ app.post('/submitEventToFb', (req, res) => {
                 .setClientUserAgent(userAgent)
                 .setFbc(fbc)
                 .setFbp(fbp)
-                .setAppUserId(externalId)
+                .setEmail(email)
+                .setExternalId(externalId)
+                .setCountry("id")
 
   const content = (new Content())
                 .setId(phoneNumber)
