@@ -113,7 +113,7 @@ app.post('/getClientSegment', (req, res) => {
 
   let age = requestData.age;
   let computer = requestData.computer;
-  let previousExperience = requestData.previousExperience;
+  //let previousExperience = requestData.previousExperience;
   let englishGoals = requestData.englishGoals;
   let monthlyBudget = requestData.monthlyBudget;
   let resultsDate = requestData.resultsDate;
@@ -121,7 +121,7 @@ app.post('/getClientSegment', (req, res) => {
   let totalCount = 0;
   totalCount += SegmentationHelper.getAgeCount(age);
   totalCount += SegmentationHelper.getComputerCount(computer);
-  totalCount += SegmentationHelper.getPreviosExperienceCount(previousExperience);
+  //totalCount += SegmentationHelper.getPreviosExperienceCount(previousExperience);
   totalCount += SegmentationHelper.getEnglishGoalsCount(englishGoals);
   totalCount += SegmentationHelper.getMonthlyBudgetCount(monthlyBudget);
   totalCount += SegmentationHelper.getResultsDateCount(resultsDate);
