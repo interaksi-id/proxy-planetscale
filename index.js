@@ -117,6 +117,7 @@ app.post('/getClientSegment', (req, res) => {
   let englishGoals = requestData.englishGoals;
   let monthlyBudget = requestData.monthlyBudget;
   let resultsDate = requestData.resultsDate;
+  let salary = requestData.salary;
 
   let totalCount = 0;
   totalCount += SegmentationHelper.getAgeCount(age);
@@ -125,6 +126,7 @@ app.post('/getClientSegment', (req, res) => {
   totalCount += SegmentationHelper.getEnglishGoalsCount(englishGoals);
   totalCount += SegmentationHelper.getMonthlyBudgetCount(monthlyBudget);
   totalCount += SegmentationHelper.getResultsDateCount(resultsDate);
+  totalCount += SegmentationHelper.getSalaryCount(salary);
 
   result.segment = SegmentationHelper.getSegmentName(totalCount);
   result.totalCount = totalCount;
